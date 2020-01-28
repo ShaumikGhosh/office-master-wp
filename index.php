@@ -1,31 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html <?php language_attributes();?>>
     <head>
 
         <!-- meta data & title -->
-        <meta charset="utf-8">
-        <title>Office</title>
+        <meta charset="<?php bloginfo('charset')?>">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="">
-
-        <!-- CSS -->
-        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300">
-        <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
-        <link href="http://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css">
-        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
-        <link rel="stylesheet" href="assets/css/style.css">
-        <link rel="stylesheet" href="assets/css/animate.min.css">
-        <link rel="stylesheet" type="text/css" media="all" href="assets/css/style-projects.css">
-        
-
-        <!-- Favicon and touch icons -->
-        <link rel="shortcut icon" href="assets/ico/favicon.ico">
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
-        <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+        <!-- avicon and touch icons -->
+        <link rel="shortcut icon" href="<?php echo get_template_directory_uri();?>/assets/ico/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="<?php echo get_template_directory_uri();?>/assets/ico/apple-touch-icon-144-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="<?php echo get_template_directory_uri();?>/assets/ico/apple-touch-icon-114-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="<?php echo get_template_directory_uri();?>/assets/ico/apple-touch-icon-72-precomposed.png">
+        <link rel="apple-touch-icon-precomposed" href="<?php echo get_template_directory_uri();?>/assets/ico/apple-touch-icon-57-precomposed.png">
+        <?php wp_head();?>
     </head>
   <body>
 
@@ -42,7 +30,7 @@
                     <span class="icon-bar"></span>
                 </button>
 
-                <a class="navbar-brand wow fadeInDownBig" href="index.html"><img src="assets/img/slider/Office.png" width="100" alt="Office"></a>      
+                <a class="navbar-brand wow fadeInDownBig" href="index.html"><img src="<?php echo get_template_directory_uri();?>/assets/img/slider/Office.png" width="100" alt="Office"></a>      
             </div>
         
             <div id="navbar-spy" class="collapse navbar-collapse navbar-responsive-collapse">
@@ -85,35 +73,34 @@
         
                     <!-- Wrapper for slides -->
                     <div class="carousel-inner">
-                        <!-- Begin Slide 1 -->
-                        <div class="item active">
-                            <img src="assets/img/slider/slide2.jpg" height="400" alt="">
-                            <div class="carousel-caption">
-                                <h3 class="carousel-title hidden-xs">Office BOOTSTRAP TEMPLATE</h3>
-                                <p class="carousel-body">RESPONSIVE \ MULTI PAGE</p>
-                            </div>
-                        </div>
-                        <!-- End Slide 1 -->
+                        <?php
+                            $slider_post = null;
+                            $slider_post = new WP_Query(array(
+                                'post_type' => 'office_master_slider',
+                                'post_per_page' => -1,
+                            ));
 
-                        <!-- Begin Slide 2 -->
-                        <div class="item">
-                            <img src="assets/img/slider/slide4.jpg" height="400" alt="">
-                            <div class="carousel-caption">
-                                <h3 class="carousel-title hidden-xs">EASY TO CUSTOMIZE</h3>
-                                <p class="carousel-body">BEAUTIFUL \ CLEAN \ MINIMAL</p>
-                            </div>
-                        </div>
-                        <!-- End Slide 2 -->
-
-                        <!-- Begin Slide 3 -->
-                        <div class="item">
-                            <img src="assets/img/slider/slide2.jpg" height="400" alt="">
-                            <div class="carousel-caption">
-                                <h3 class="carousel-title hidden-xs">MULTI-PURPOSE TEMPLATE</h3>
-                                <p class="carousel-body">PORTFOLIO \ CORPORATE \ CREATIVE</p>
-                            </div>
-                        </div>
-                        <!-- End Slide 3 -->
+                            if($slider_post->have_posts()){
+                                while($slider_post->have_posts()){
+                                    $slider_post->the_post();
+                                    $slider_caption = get_post_meta(get_the_ID(), 'slider_caption', true);
+                                    ?>
+                                        <!-- Begin Slide 1 -->
+                                        <div class="item active">
+                                            <?php the_post_thumbnail('slider_image');?>
+                                            <div class="carousel-caption">
+                                                <h3 class="carousel-title hidden-xs"><?php the_title();?></h3>
+                                                <p class="carousel-body"><?php echo $slider_caption;?></p>
+                                            </div>
+                                        </div>
+                                        <!-- End Slide 1 -->
+                                    <?php
+                                }
+                            }else{
+                                echo "Have no post!";
+                            }
+                            wp_reset_postdata();
+                        ?>
                     </div>
         
                     <!-- Controls -->
@@ -252,13 +239,6 @@
     <div class="copyright text center">
         <p>&copy; Copyright 2014, <a href="#">Your Website Link</a>. Theme by <a href="https://themewagon.com/" target="_blank">ThemeWagon</a></p>
     </div>
-
-    
-    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/wow.min.js"></script>
-    <script>
-      new WOW().init();
-    </script>
+    <?php wp_footer();?>
   </body>
 </html>
